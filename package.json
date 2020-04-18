@@ -1,0 +1,19 @@
+{
+  "name": "itc230",
+  "version": "1.0.0",
+  "description": "web application for itc230",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NebiyatG/itc230.git"
+  },
+  "author": "Nebiyat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NebiyatG/itc230/issues"
+  },
+  "homepage": "https://github.com/NebiyatG/itc230#readme"
+}
