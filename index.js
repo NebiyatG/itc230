@@ -1,21 +1,54 @@
-var http = require("http");
-const movie = require('./data');
-var allMovies = movie.getAll();
+'use strict'
 
-http.createServer(function(req,res){
-  var path = req.url.toLowerCase();
-  switch(path) {
-    case '/': 
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('Home Page.' + 'the movies array has: ' + allMovies.length + ' movies');
-    break;
-    case '/about':
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end('About Me: My name is Nebiyat. I study web development and I like play video games.');
-      break;
-    default:
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.end('404:Page not found.');
-  }
-  
-}).listen(process.env.PORT || 3000);
+
+const http = require("http");
+const movies = require('./data.js');
+const express = require("express");
+const bodyParser = require("body-parser")
+const exphbs = require("express-handlebars"); 
+
+
+const app = express();
+
+
+var all = movies.getAll();
+
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public')); 
+app.use(bodyParser.urlencoded({extended: true})); 
+app.engine('handlebars', exphbs({defaultLayout: false}));
+app.set("view engine", "handlebars");
+
+
+app.get('/home.html', (request, response) => {
+  response.type('text/html');
+  response.sendFile(__dirname + '/public/home.html');
+});
+
+app.get('/', (request, response) => {
+  response.render('home', {movies: all});
+});
+
+app.get('/detail', (request, response) => {
+  let index = request.query.index;
+  let movie = all[index];
+  response.render('detail', { index: index, movie: movie });
+});
+
+
+// send plain text response
+app.get('/about', (request, response) => {
+  response.type('text/plain');
+  response.send('About page');
+});
+
+app.use( (request,response) => {
+  response.type('text/plain'); 
+  response.status(404);
+  response.send('404 - Not found');
+});
+
+
+app.listen(app.get('port'), () => {
+  console.log('Express started'); 
+});
