@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 // const ip = process.env.ip || '127.0.0.1';
 // const connectionString = 'mongodb://' +ip+ '/<DB_NAME>';
 
-mongoose.connect(connectionString, { dbName: "Itc230", useNewUrlParser: true }); 
+mongoose.connect(connectionString, { dbName: "Itc230", useNewUrlParser: false }); 
 
 mongoose.connection.on('open', () => {
   console.log('Mongoose connected.');
@@ -22,4 +22,4 @@ const mySchema = mongoose.Schema({
  year: Number
 }); 
 
-module.exports = mongoose.model('movies', mySchema);
+module.exports = mongoose.model('Movie', mySchema,"Movies");

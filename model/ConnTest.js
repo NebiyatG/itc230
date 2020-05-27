@@ -1,7 +1,9 @@
-const movies = require("../model/movies")
+const Movie = require("../model/movies")
 
-movies.find({}, (err, items) => {
-    if (err) return next(err)
-    console.log(items.length)
-
-})
+Movie.find({}).lean()
+    .then((movies) => {
+        console.log(movies);
+    })    
+.catch(err => console.log(err));
+//Book.find({}).lean()
+ 

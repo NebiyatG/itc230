@@ -1,16 +1,11 @@
 'use strict'
-
-
 const http = require("http");
+const Movie = require('./model/movies');
 const movies = require('./data.js');
 const express = require("express");
 const bodyParser = require("body-parser")
 const exphbs = require("express-handlebars"); 
-
-
 const app = express();
-
-
 var all = movies.getAll();
 
 app.set('port', process.env.PORT || 3000);
@@ -26,14 +21,38 @@ app.get('/home.html', (request, response) => {
 });
 
 app.get('/', (request, response) => {
-  response.render('home', {movies: all});
+  return Movie.find({}).lean()
+  .then((movies) => {
+    console.log(movies);
+    response.send(movies)
+  })
+  .catch(err => console.log(err));
+
+ // response.render('home', {movies: all});
 });
 
-app.get('/detail', (request, response) => {
-  let index = request.query.index;
-  let movie = all[index];
-  response.render('detail', { index: index, movie: movie });
-});
+ app.get('/detail', (request, response) => {
+  let director = request.query.director;
+  Movie.findOne({"director":director}).lean()
+  .then((movie) => {
+    response.send(movie)
+      console.log(movie);;
+  })
+  .catch(err => console.log(err));
+  });
+  
+  app.get('/delete', (request, response) => {
+    let director = request.query.director;
+  Movie.deleteOne({"director":director}).lean()
+  .then((movie) => {
+    response.send(movie)
+    console.log(movie);;
+  })
+  .catch(err => console.log(err));
+  });
+  
+  //let movie = all[index];
+  //response.render('detail', { index: index, movie: movie });
 
 
 // send plain text response
