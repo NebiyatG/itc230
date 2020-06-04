@@ -1,10 +1,12 @@
 'use strict'
+
 const http = require("http");
 const Movie = require('./model/movies');
 const movies = require('./data.js');
 const express = require("express");
 const bodyParser = require("body-parser")
 const exphbs = require("express-handlebars"); 
+
 const app = express();
 var all = movies.getAll();
 
@@ -24,10 +26,21 @@ app.get('/', (request, response) => {
   return Movie.find({}).lean()
   .then((movies) => {
     console.log(movies);
-    response.send(movies)
+   // response.send(movies)
   })
-  .catch(err => console.log(err));
+  //.catch(err => console.log(err));
+  .catch(err => next(err));
 
+ // response.render('home', {movies: all});
+});
+
+app.get('/api/movies', (request, response) => {
+  return Movie.find({}).lean()
+  .then((movies) => {
+   // console.log(movies);
+   // response.send(movies)
+  })
+ .catch(err => console.log(err));
  // response.render('home', {movies: all});
 });
 
@@ -35,17 +48,40 @@ app.get('/', (request, response) => {
   let director = request.query.director;
   Movie.findOne({"director":director}).lean()
   .then((movie) => {
-    response.send(movie)
+    response.render('detail', {movie: movie });
+
       console.log(movie);;
   })
   .catch(err => console.log(err));
   });
+
+  app.get('api/movies/:title', (request, response) => {
+    let title = request.params.title;
+      //let movie = all[index];
+     
+    Movie.findOne({"title":title}).lean()
+    .then((movie) => {
+      response.json(movie)
+      console.log(movie);;
+    })
+    .catch(err => console.log(err));
+    })
   
-  app.get('/delete', (request, response) => {
+// insert or update a single record 
+app.post('/api/add', (request, response) => {
+const newMovie= request.body;
+Movie.update({'title':newMovie.title}, newMovie, {upsert:true}, (err, result) => {
+  if (err) return next(err);
+  response.json(result)
+  console.log(result);
+});
+});
+
+ app.get('/api/delete', (request, response) => {
     let director = request.query.director;
   Movie.deleteOne({"director":director}).lean()
   .then((movie) => {
-    response.send(movie)
+    response.json(movie)
     console.log(movie);;
   })
   .catch(err => console.log(err));
