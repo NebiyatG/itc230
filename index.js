@@ -26,6 +26,7 @@ app.get('/', (request, response) => {
   return Movie.find({}).lean()
   .then((movies) => {
     console.log(movies);
+    response.render('home_react', {items: JSON.stringify(movies)});
    // response.send(movies)
   })
   //.catch(err => console.log(err));
