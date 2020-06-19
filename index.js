@@ -15,6 +15,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true})); 
 app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set("view engine", "handlebars");
+app.use(bodyParser.json());
 
 
 app.get('/home.html', (request, response) => {
